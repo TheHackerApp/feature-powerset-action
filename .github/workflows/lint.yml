@@ -1,0 +1,15 @@
+---
+name: Lint
+
+on:  # yamllint disable-line rule:truthy
+  - push
+
+jobs:
+  yaml:
+    name: YAML
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: pip install yamllint
+      - run: yamllint -s -f github .
