@@ -1,0 +1,47 @@
+---
+name: Cargo Feature Powerset
+description: Generate a powerset of features from a Cargo manifest
+branding:
+  icon: grid
+  color: purple
+
+inputs:
+  manifest:
+    description: Path to the Cargo.toml file
+    required: false
+    default: Cargo.toml
+
+outputs:
+  features:
+    description: A JSON array of comma-delimited feature sets
+    value: ${{ steps.generator.outputs.features }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: 3.11
+
+    - id: generator
+      shell: python
+      run: |
+        import json
+        import tomllib
+        from itertools import chain, combinations
+        from os import environ
+        from pathlib import Path
+
+        cargo_toml = Path.cwd() / "${{ inputs.manifest }}"
+        manifest = tomllib.load(cargo_toml.open("rb"))
+
+        features = manifest.get("features", {}).keys()
+        features_powerset = list(chain.from_iterable(combinations(features, r) for r in range(len(features)+1)))
+
+        result = json.dumps([','.join(feature_set) for feature_set in features_powerset[1:]])
+
+        if (path := environ.get("GITHUB_OUTPUT")) is not None:
+          with open(path, "a") as output:
+            output.write(f"features={result}\n")
+        else:
+          print(result)
