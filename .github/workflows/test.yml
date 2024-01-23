@@ -23,6 +23,6 @@ jobs:
         id: generate
         with:
           manifest: ${{ matrix.manifest }}.toml
-      
-      - run: echo "${{ steps.generate.outputs.features }}" >> result.json
+
+      - run: echo '${{ steps.generate.outputs.features }}' >> result.json
       - run: diff -u result.json ${{ matrix.manifest }}.json
