@@ -1,0 +1,28 @@
+---
+name: Test
+
+on:  # yamllint disable-line rule:truthy
+  - push
+
+jobs:
+  test:
+    name: Generate (${{ matrix.manifest }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        manifest:
+          - Cargo
+          - testdata/empty
+          - testdata/default
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: TheHackerApp/feature-powerset-action@main
+        uses: ./
+        id: generate
+        with:
+          manifest: ${{ matrix.manifest }}.toml
+      
+      - run: echo "${{ steps.generate.outputs.features }}" >> result.json
+      - run: diff -u result.json ${{ matrix.manifest }}.json

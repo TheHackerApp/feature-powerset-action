@@ -111,3 +111,8 @@ fabric.properties
 
 # Ignore code-workspaces
 *.code-workspace
+
+
+# Added by cargo
+
+/target
