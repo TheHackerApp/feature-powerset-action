@@ -16,7 +16,7 @@ jobs:
           - testdata/empty
           - testdata/default
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: TheHackerApp/feature-powerset-action@main
         uses: ./
